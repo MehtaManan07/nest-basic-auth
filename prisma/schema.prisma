@@ -5,20 +5,42 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-    provider = "prisma-client-js"
-  }
+  provider = "prisma-client-js"
+}
 
-  datasource db {
-    provider = "mysql"
-    url      = env("DATABASE_URL")
-  }
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
 
-  model User {
-    id        Int      @id @default(autoincrement())
-    email     String   @unique
-    password  String // Hashed password stored securely
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    name      String
-    isDeleted Boolean  @default(false)
-  }
+generator nestjsDto {
+  provider                        = "prisma-generator-nestjs-dto"
+  output                          = "../src/generated/nestjs-dto"
+  outputToNestJsResourceStructure = "false"
+  exportRelationModifierClasses   = "true"
+  reExport                        = "false"
+  createDtoPrefix                 = "Create"
+  updateDtoPrefix                 = "Update"
+  dtoSuffix                       = "Dto"
+  entityPrefix                    = ""
+  entitySuffix                    = ""
+  fileNamingStyle                 = "camel"
+}
+
+model Category {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+}
+
+model User {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isDeleted Boolean  @default(false)
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String // Hashed password stored securely
+  name      String
+}
