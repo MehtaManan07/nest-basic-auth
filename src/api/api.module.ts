@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { PrismaModule } from 'nestjs-prisma';
+import { loggingMiddleware, PrismaModule } from 'nestjs-prisma';
 
 @Module({
   imports: [
@@ -9,6 +9,7 @@ import { PrismaModule } from 'nestjs-prisma';
       isGlobal: true,
       prismaServiceOptions: {
         explicitConnect: true,
+        middlewares: [loggingMiddleware()],
       },
     }),
     AuthModule,

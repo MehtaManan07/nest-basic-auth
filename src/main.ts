@@ -20,7 +20,7 @@ async function bootstrap() {
     .setTitle('Api docs')
     .setDescription('The API description')
     .setVersion('0.1')
-    // .addBearerAuth()
+    .addBearerAuth()
     .build();
 
   app.use(RequestIdMiddleware);

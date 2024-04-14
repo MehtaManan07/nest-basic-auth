@@ -1,17 +1,19 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'nestjs-prisma';
 import { UserEntity } from './entities/user.entity';
+import { LoggerService } from 'src/common/logger';
 
 @Injectable()
 export class UsersService {
-  logger: Logger;
-  constructor(private prisma: PrismaService) {
-    this.logger = new Logger(UsersService.name);
+  constructor(
+    private prisma: PrismaService,
+    private logger: LoggerService,
+  ) {
+    this.logger.setContext(UsersService.name);
   }
   async findAll(): Promise<UserEntity[]> {
     const users = await this.prisma.user.findMany({});
-    this.logger.log('Users found: ' + users.length);
     const userEntities = users.map((user) => new UserEntity(user));
     return userEntities;
   }
@@ -22,8 +24,11 @@ export class UsersService {
     const user = new UserEntity(userDoc);
     return user;
   }
+
   async findMe(req): Promise<UserEntity> {
-    return req.user;
+    const { id } = req.user;
+
+    return this.findOne(+id);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
