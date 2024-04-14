@@ -1,0 +1,12 @@
+generator nestjsDto {
+    provider                        = "prisma-generator-nestjs-dto"
+    outputToNestJsResourceStructure = "true"
+    exportRelationModifierClasses   = "true"
+    reExport                        = "false"
+    createDtoPrefix                 = "Create"
+    updateDtoPrefix                 = "Update"
+    dtoSuffix                       = "Dto"
+    entityPrefix                    = ""
+    entitySuffix                    = ""
+    fileNamingStyle                 = "camel"
+}

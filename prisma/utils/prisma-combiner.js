@@ -3,6 +3,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 // Function to read the base model from base.prisma
 function readBaseModel(directory) {
@@ -18,6 +24,25 @@ function readBaseModel(directory) {
   } else {
     return [];
   }
+}
+
+function readGenerators(directory) {
+  const filesToExclude = [];
+  const files = fs
+    .readdirSync(directory)
+    .filter(
+      (file) => !filesToExclude.includes(file) && file.endsWith('.prisma'),
+    )
+    .map((file) => {
+      // fs.readFileSync(path.join(directory, file), 'utf-8')
+      const lines = fs
+        .readFileSync(path.join(directory, file), 'utf-8')
+        .toString()
+        .replace(/\r\n/g, '\n')
+        .split('\n');
+      return lines.join('\n');
+    });
+  return files;
 }
 
 // Function to read all Prisma model files from a directory
@@ -49,8 +74,7 @@ function combineModels(directory) {
   const combinedSchema = modelFiles.join('\n\n');
 
   // Write the combined schema to schema.prisma file
-  fs.writeFileSync(path.join(directory, 'models.prisma'), combinedSchema);
-  console.log('Combined schema.prisma file has been created successfully.');
+  return combinedSchema;
 }
 
 // Main function
@@ -61,7 +85,28 @@ function main() {
     process.exit(1);
   }
 
-  combineModels(directory);
+  const combinedSchema = combineModels(directory);
+  let fileToWrite = combinedSchema;
+  rl.question('Do you want to combine generators?(yes/no)', (ans) => {
+    if (ans === 'yes' || ans === 'y') {
+      rl.question('Mention generators directory:', (genDir) => {
+        if (!genDir) {
+          fs.writeFileSync(path.join(directory, 'models.prisma'), fileToWrite);
+          rl.close();
+        }
+        const genPath = path.join(directory.replace('schemas', ''), genDir);
+        console.log('Reading generators from:', genPath);
+        const generators = readGenerators(genPath);
+        fileToWrite = `${generators.join('\n\n')} \n\n${combinedSchema}`;
+        fs.writeFileSync(path.join(directory, 'models.prisma'), fileToWrite);
+        rl.close();
+      });
+    } else {
+      fs.writeFileSync(path.join(directory, 'models.prisma'), fileToWrite);
+      rl.close();
+    }
+  });
+  // console.log('Combined schema.prisma file has been created successfully.');
 }
 
 // Execute the main function
