@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { loggingMiddleware, PrismaModule } from 'nestjs-prisma';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { loggingMiddleware, PrismaModule } from 'nestjs-prisma';
     }),
     AuthModule,
     UsersModule,
+    CategoriesModule,
   ],
   exports: [AuthModule, UsersModule],
 })
