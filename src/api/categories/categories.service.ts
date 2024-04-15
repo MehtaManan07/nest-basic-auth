@@ -38,6 +38,20 @@ export class CategoriesService {
     return category;
   }
 
+  async search(params: { query: string }) {
+    const { query } = params;
+    const categories = await this.prisma.category.findMany({
+      where: {
+        OR: [
+          { name: { contains: query } },
+          { description: { contains: query } },
+          { keywords: { contains: query } },
+        ],
+      },
+    });
+    return categories;
+  }
+
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.prisma.category.update({
       where: { id },
