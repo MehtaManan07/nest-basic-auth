@@ -41,7 +41,7 @@ export class CategoriesService {
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.prisma.category.update({
       where: { id },
-      data: { ...updateCategoryDto, updatedAt: new Date() },
+      data: updateCategoryDto,
     });
     if (!category)
       throw new NotFoundException('Category not found by id: ' + id);
@@ -51,7 +51,7 @@ export class CategoriesService {
   async remove(id: number) {
     const category = await this.prisma.category.update({
       where: { id },
-      data: { isDeleted: true, updatedAt: new Date() },
+      data: { isDeleted: true },
     });
     if (!category)
       throw new NotFoundException('Category not found by id: ' + id);
