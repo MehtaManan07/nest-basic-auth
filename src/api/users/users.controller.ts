@@ -10,13 +10,14 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { LoggerService } from 'src/common/logger';
 import { JwtAuthGuard } from '../auth/guard';
 import { Request } from 'express';
 
 @Controller('users')
 @ApiTags('users')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(
@@ -33,8 +34,8 @@ export class UsersController {
   }
 
   @Get('me')
-  findMe(@Req() req: Request) {
-    return this.usersService.findMe(req);
+  findMe(@Req() req: any) {
+    return this.usersService.findMe(+req.user.id);
   }
 
   @Get(':id')

@@ -25,10 +25,14 @@ export class UsersService {
     return user;
   }
 
-  async findMe(req): Promise<UserEntity> {
-    const { id } = req.user;
-
-    return this.findOne(+id);
+  async findMe(id: number): Promise<UserEntity> {
+    const userDoc = await this.prisma.user.findUnique({
+      where: { id },
+      select: { expenses: true },
+    });
+    if (!userDoc) throw new NotFoundException('User not found by id: ' + id);
+    const user = new UserEntity(userDoc);
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

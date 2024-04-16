@@ -20,9 +20,18 @@ async function bootstrap() {
     .setTitle('Api docs')
     .setDescription('The API description')
     .setVersion('0.1')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        description: 'Please enter token in the following format: Bearer <JWT>',
+        name: 'Authorization',
+        bearerFormat: 'Bearer',
+        scheme: 'Bearer',
+        type: 'http',
+        in: 'Header',
+      },
+      'access-token',
+    )
     .build();
-
   app.use(RequestIdMiddleware);
   app.enableCors();
   const document = SwaggerModule.createDocument(app, config);
