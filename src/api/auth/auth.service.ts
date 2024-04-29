@@ -8,6 +8,7 @@ import { AuthEntity } from './entity/auth.entity';
 import { PrismaService } from 'nestjs-prisma';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +37,7 @@ export class AuthService {
 
     // Step 3: Generate a JWT containing the user's ID and return it
     return {
-      accessToken: this.jwtService.sign({ userId: user.id }),
+      accessToken: this.jwtService.sign({ userId: user.id, role: user.role }),
     };
   }
 
@@ -48,14 +49,14 @@ export class AuthService {
       data: { ...data, password: hashedPassword, isDeleted: false },
     });
     return {
-      accessToken: this.jwtService.sign({ userId: user.id }),
+      accessToken: this.jwtService.sign({ userId: user.id, role: user.role }),
     };
   }
 
   /**
    * only for dev use
    */
-  async getToken(params: { userId: number }): Promise<string> {
-    return this.jwtService.sign({ userId: params.userId });
+  async getToken(params: { userId: number; role: Role }): Promise<string> {
+    return this.jwtService.sign({ userId: params.userId, role: params.role });
   }
 }
