@@ -1,6 +1,0 @@
-model Category {
-    name        String    @unique
-    description String? // Optional description
-    keywords    String    @default("") // It will be comma separated keywords
-    // expenses    Expense[]
-}
