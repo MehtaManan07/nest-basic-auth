@@ -28,7 +28,6 @@ export class UsersService {
   async findMe(id: number): Promise<UserEntity> {
     const userDoc = await this.prisma.user.findUnique({
       where: { id },
-      select: { expenses: true },
     });
     if (!userDoc) throw new NotFoundException('User not found by id: ' + id);
     const user = new UserEntity(userDoc);

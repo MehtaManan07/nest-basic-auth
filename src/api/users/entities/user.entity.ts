@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { Exclude } from 'class-transformer';
-import { ExpenseEntity } from 'src/api/expenses/entities/expense.entity';
 
 export class UserEntity implements User {
   constructor(partial: Partial<UserEntity>) {
@@ -27,7 +26,4 @@ export class UserEntity implements User {
 
   @ApiProperty()
   isDeleted: boolean;
-
-  @ApiProperty()
-  expenses: ExpenseEntity[];
 }
